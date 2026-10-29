@@ -38,10 +38,10 @@ export default function ConnectAccounts({ onResult, onStart, onReceipt }: { onRe
   }
   return (
     <div style={{display: 'flex', gap: 12, flexWrap: 'wrap', margin: '16px 0'}}>
-      <button onClick={connectGmail} disabled={checking} style={{padding: '10px 16px', background: '#111', color: 'white', borderRadius: 8, border: 0, cursor: 'pointer'}}>
+      <button onClick={connectGmail} disabled={checking} style={{padding: '10px 18px', background: '#17191d', color: 'white', borderRadius: 999, border: 0, cursor: 'pointer', fontWeight: 650}}>
         {checking ? 'Checking…' : 'Connect Gmail + Drive'}
       </button>
-      <label style={{padding: '10px 16px', border: '1px solid #ddd', borderRadius: 8, cursor: scanning ? 'wait' : 'pointer', opacity: scanning ? 0.6 : 1}}>
+      <label style={{padding: '10px 18px', border: '1px solid #d4d7dc', background: 'white', borderRadius: 999, cursor: scanning ? 'wait' : 'pointer', opacity: scanning ? 0.6 : 1}}>
         {scanning ? 'Scanning…' : 'Scan Receipt Photo'}
         <input type="file" accept="image/*" hidden onChange={async (e)=>{
           const file = e.target.files?.[0]; if(!file) return;
@@ -64,7 +64,7 @@ export default function ConnectAccounts({ onResult, onStart, onReceipt }: { onRe
           }
         }} />
       </label>
-      <label style={{padding: '10px 16px', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer'}}>
+      <label style={{padding: '10px 18px', border: '1px solid #17191d', background: 'white', borderRadius: 999, cursor: 'pointer', fontWeight: 600}}>
         Upload Bank CSV
         <input type="file" accept=".csv,text/csv" hidden onChange={async (e)=>{
           const file = e.target.files?.[0]; if(!file) return;

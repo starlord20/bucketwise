@@ -13,6 +13,7 @@
 - [ ] Leaks screenshot: Adobe $52.99 + Spotify $16.99 with dated reasons
 - [ ] Digest screenshot: "by spark" + $69.98 math + cancel-email draft
 - [ ] Shock-test screenshot: per-shock FAIL/buffer verdicts + infographic
+- [ ] Receipt scan: attempted-live with honest 422 (SAM 3.1 returns empty text — segments, doesn't OCR; not a photo defect). Scored workflow stays CSV → buckets → shock → digest.
 
 ## Demo video (DEMO-SCRIPT.md, 2:30)
 - [ ] Recorded happy path, no music, clean voiceover

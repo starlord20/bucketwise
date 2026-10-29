@@ -40,10 +40,11 @@ function ScoreGauge({ score, label, color }: { score: number; label: string; col
 }
 
 function ShockView({ text }: { text: string }) {
+  const [tab, setTab] = useState(0);
   let d: (ShockData & { live?: boolean }) | null = null;
   try { d = JSON.parse(text); } catch { /* fall through to raw */ }
   if (!d || (!d.bufferNeeded && !d.checklist && !d.perShock && !d.mock)) {
-    return <pre style={{background: '#111', color: '#0f0', padding: 12, borderRadius: 8, overflow: 'auto', marginTop: 12}}>{text}</pre>;
+    return <pre style={{background: '#17191d', color: '#e8eaed', padding: 12, borderRadius: 10, overflow: 'auto', marginTop: 12, fontSize: 13}}>{text}</pre>;
   }
   if (d.mock) return <p style={{marginTop: 12}}><strong>Reference scenario</strong> (live shock-test unavailable — hit Run Shock Test again): {d.mock}</p>;
   const proj = d.projection;
@@ -77,20 +78,34 @@ function ShockView({ text }: { text: string }) {
         <ul>{d.checklist.map((c, i) => <li key={i}>{c}</li>)}</ul>
       )}
       {d.perShock && d.perShock.length > 0 && (
-        <ul>{d.perShock.map((s, i) => {
-          const score = typeof s.score === 'number' && !isNaN(s.score) ? Math.min(100, Math.max(0, Math.round(s.score))) : null;
-          const color = score === null ? '#6b7280' : score >= 70 ? '#10b981' : score >= 40 ? '#f59e0b' : '#ef4444';
-          return (
-            <li key={i} style={{marginBottom: 8}}>
-              <strong>{s.name}{score !== null ? ` — Score: ${score}/100` : ''}:</strong> {s.verdict}
-              {score !== null && (
-                <div style={{height: 8, background: '#eee', borderRadius: 8, overflow: 'hidden', marginTop: 4, maxWidth: 320}}>
-                  <div style={{width: `${score}%`, height: '100%', background: color}} />
-                </div>
-              )}
-            </li>
-          );
-        })}</ul>
+        <div style={{marginTop: 4}}>
+          <div role="tablist" aria-label="Shock scenarios" style={{display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12}}>
+            {d.perShock.map((s, i) => {
+              const active = i === Math.min(tab, d.perShock!.length - 1);
+              return (
+                <button key={i} role="tab" aria-selected={active} onClick={() => setTab(i)} style={{padding: '6px 14px', borderRadius: 999, border: active ? '1px solid #17191d' : '1px solid #d4d7dc', background: active ? '#17191d' : 'white', color: active ? 'white' : '#2a3139', cursor: 'pointer', fontSize: 13, fontWeight: active ? 650 : 450}}>
+                  {s.name}
+                </button>
+              );
+            })}
+          </div>
+          {(() => {
+            const s = d.perShock![Math.min(tab, d.perShock!.length - 1)];
+            const score = typeof s.score === 'number' && !isNaN(s.score) ? Math.min(100, Math.max(0, Math.round(s.score))) : null;
+            const color = score === null ? '#6b7280' : score >= 70 ? '#15803d' : score >= 40 ? '#b45309' : '#b91c1c';
+            return (
+              <div role="tabpanel" style={{border: '1px solid #e4e5e7', borderRadius: 10, padding: 12, background: 'white'}}>
+                <p style={{margin: 0}}><strong>{s.name}{score !== null ? ` — ${score}/100` : ''}</strong></p>
+                <p style={{margin: '6px 0 0', fontSize: 14, color: '#2a3139'}}>{s.verdict}</p>
+                {score !== null && (
+                  <div role="progressbar" aria-valuenow={score} aria-valuemin={0} aria-valuemax={100} aria-label={`${s.name} score ${score} of 100`} style={{height: 8, background: '#eceef1', borderRadius: 6, overflow: 'hidden', marginTop: 8, maxWidth: 340}}>
+                    <div style={{width: `${score}%`, height: '100%', background: color}} />
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+        </div>
       )}
       {projView}
       {d.perShock && d.perShock.some((s) => typeof s.score === 'number' && !isNaN(s.score)) && (
@@ -250,14 +265,18 @@ export default function Page() {
     }
   }
 
+  const total = buckets.reduce((s, b) => s + num(b.current), 0);
+  const alloc = buckets.map((b) => ({ name: b.name, pct: total > 0 ? Math.round((num(b.current) / total) * 100) : 0 }));
   return (
-    <main style={{maxWidth: 900, margin: '0 auto', padding: 24, fontFamily: 'system-ui'}}>
-      <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
-        <img src="/icon-buckets.webp" alt="Bucketwise buckets mark" width={56} height={56} style={{borderRadius: 12}} />
-        <h1 style={{margin: 0}}>Bucketwise</h1>
-      </div>
-      <p>Household CFO — Financial Freedom OS. Meta Global AI Developer Hackathon, Indie Track.</p>
-      <p style={{background: '#f0f4ff', padding: 12, borderRadius: 8}}>Status: Gmail ingest → Wonder parsing → Spark leak detection → Wonder shock-test</p>
+    <main style={{maxWidth: 1120, margin: '0 auto', padding: 24}}>
+      <header style={{display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap'}}>
+        <img src="/icon-buckets.webp" alt="Bucketwise buckets mark" width={44} height={44} style={{borderRadius: 10}} />
+        <div style={{flex: 1, minWidth: 220}}>
+          <h1 style={{margin: 0, fontSize: 26, letterSpacing: '-0.015em'}}>Bucketwise</h1>
+          <p style={{margin: '2px 0 0', fontSize: 13, color: '#5b6470'}}>Household CFO — Financial Freedom OS · Indie Track</p>
+        </div>
+        <div style={{fontSize: 12, color: '#5b6470', border: '1px solid #e4e5e7', background: 'white', padding: '6px 12px', borderRadius: 999}}>Gmail ingest → Wonder buckets → Spark leaks → Wonder shock-test</div>
+      </header>
       <ConnectAccounts onStart={(kind) => startImport(kind)} onResult={handleResult} onReceipt={setReceipt} />
       {(loading || finished) && <ImportProgress stages={stages} current={stage} complete={!loading} />}
       {receipt && (receipt.error ? (
@@ -274,26 +293,42 @@ export default function Page() {
           }} disabled={loading} style={{marginLeft: 8, padding: '4px 12px', borderRadius: 8, border: '1px solid #16a34a', background: '#16a34a', color: 'white', cursor: 'pointer'}}>Add to buckets</button>
         </div>
       ))}
-      {error && <p style={{color: '#b91c1c'}}>Upload failed: {error}</p>}
-      {meta && <p style={{color: '#666', fontSize: 14}}>Analyzed {meta.count} transactions{meta.mock ? ' (mock — set META_API_KEY for live Wonder/Spark)' : ' (live Wonder + Spark)'}.</p>}
+      {error && <p role="alert" style={{color: '#b91c1c', background: '#fef2f2', border: '1px solid #fecaca', padding: '8px 12px', borderRadius: 10}}>Upload failed: {error}</p>}
       {meta?.dateRange && (
-        <p style={{color: '#1e3a5f', fontSize: 14, background: '#eff6ff', padding: '8px 12px', borderRadius: 8}}>
+        <p style={{color: '#1e3a5f', fontSize: 13, background: 'white', border: '1px solid #e4e5e7', padding: '8px 12px', borderRadius: 10}}>
           History: {meta.dateRange.from} → {meta.dateRange.to} ({meta.dateRange.days} days analyzed) · Report date: {today}
         </p>
       )}
-      <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 16, marginTop: 24}}>
+      <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14, marginTop: 20}}>
         {buckets.map(b => <BucketCard key={b.name} bucket={b} />)}
       </div>
-      {leaks && leaks.length > 0 && (
-        <section style={{marginTop: 24, border: '1px solid #fecaca', background: '#fef2f2', padding: 16, borderRadius: 12}}>
-          <h2>Leaks found ({leaks.length})</h2>
-          <ul>
-            {leaks.map((l, i) => <li key={i}>${num(l.amount).toFixed(2)} — {String(l.merchant ?? 'Unknown')}{l.reason ? ` (${l.reason})` : ''}</li>)}
-          </ul>
+      <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 14, marginTop: 14}}>
+        <section aria-label="Transactions and leaks" style={{border: '1px solid #e4e5e7', background: 'white', padding: 16, borderRadius: 14, boxShadow: '0 1px 2px rgba(16,24,40,0.06)'}}>
+          <h2 style={{margin: '0 0 4px', fontSize: 16}}>Money in — auto-classified</h2>
+          <p style={{margin: '0 0 12px', fontSize: 13, color: '#5b6470'}}>{meta ? `Analyzed ${meta.count} transactions${meta.mock ? ' (mock)' : ' (live Wonder + Spark)'}` : 'Upload a CSV or connect Gmail to classify.'}</p>
+          {leaks && leaks.length > 0 ? (
+            <ul style={{margin: 0, paddingLeft: 18, fontSize: 14}}>
+              {leaks.map((l, i) => <li key={i} style={{marginBottom: 6}}><strong>${num(l.amount).toFixed(2)}</strong> — {String(l.merchant ?? 'Unknown')}{l.reason ? <span style={{color: '#5b6470'}}> · {l.reason}</span> : ''} <span style={{fontSize: 12, color: '#b45309', border: '1px solid #f3d9ae', background: '#fdf6e9', padding: '1px 8px', borderRadius: 999, marginLeft: 6}}>leak</span></li>)}
+            </ul>
+          ) : (
+            <p style={{margin: 0, fontSize: 14, color: '#5b6470'}}>No duplicate-subscription leaks in this import. Monthly bills are never flagged as leaks.</p>
+          )}
         </section>
-      )}
-      <section style={{marginTop: 24, border: '1px solid #e5e7eb', padding: 16, borderRadius: 12}}>
-        <h2>Sources</h2>
+        <section aria-label="Bucket allocation" style={{border: '1px solid #e4e5e7', background: 'white', padding: 16, borderRadius: 14, boxShadow: '0 1px 2px rgba(16,24,40,0.06)'}}>
+          <h2 style={{margin: '0 0 8px', fontSize: 16}}>Where the money sits</h2>
+          {alloc.map((a, i) => (
+            <div key={a.name} style={{marginBottom: 10}}>
+              <div style={{display: 'flex', justifyContent: 'space-between', fontSize: 13}}><span>{a.name}</span><span style={{fontVariantNumeric: 'tabular-nums'}}>{a.pct}%</span></div>
+              <div style={{height: 8, background: '#eceef1', borderRadius: 6, overflow: 'hidden', marginTop: 4}}>
+                <div style={{width: `${a.pct}%`, height: '100%', background: GAUGE_COLORS[i % GAUGE_COLORS.length]}} />
+              </div>
+            </div>
+          ))}
+          <p style={{margin: '8px 0 0', fontSize: 12, color: '#5b6470'}}>Shares of the ${total.toLocaleString()} currently in buckets.</p>
+        </section>
+      </div>
+      <section style={{marginTop: 14, border: '1px solid #e4e5e7', background: 'white', padding: 16, borderRadius: 14, boxShadow: '0 1px 2px rgba(16,24,40,0.06)'}}>
+        <h2 style={{margin: '0 0 8px', fontSize: 16}}>Sources</h2>
         <ul style={{margin: 0, paddingLeft: 20, fontSize: 14}}>
           <li>
             Bank CSV — {lastCsv ? `connected${meta?.updatedAt ? ` · last sync ${new Date(meta.updatedAt).toLocaleString()}` : ''}` : 'not connected — upload a CSV'}
@@ -318,15 +353,15 @@ export default function Page() {
           </div>
         ))}
       </section>
-      <section style={{marginTop: 32, border: '1px solid #ddd', padding: 16, borderRadius: 12}}>
-        <h2>Shock-Test Simulator (2008 / 2020 / 2022)</h2>
-        <p>What if income drops 30% for 4 months? Results will appear here after calling /api/shock-test</p>
-        <button onClick={runShockTest} disabled={shockBusy} style={{cursor: 'pointer'}}>{shockBusy ? 'Running…' : 'Run Shock Test'}</button>
+      <section style={{marginTop: 14, border: '1px solid #e4e5e7', background: 'white', padding: 16, borderRadius: 14, boxShadow: '0 1px 2px rgba(16,24,40,0.06)'}}>
+        <h2 style={{margin: '0 0 4px', fontSize: 16}}>Shock-Test Simulator (2008 / 2020 / 2022)</h2>
+        <p style={{margin: '0 0 12px', fontSize: 13, color: '#5b6470'}}>What if income drops 30% for 4 months? Runs live against your current buckets.</p>
+        <button onClick={runShockTest} disabled={shockBusy} style={{padding: '10px 18px', borderRadius: 999, border: 0, background: '#17191d', color: 'white', fontWeight: 650, cursor: shockBusy ? 'wait' : 'pointer'}}>{shockBusy ? 'Running…' : 'Run Shock Test'}</button>
         {shock && <ShockView text={shock} />}
       </section>
-      <section style={{marginTop: 24}}>
-        <h3>Daily CFO Digest{meta?.digestBy ? ` — by ${meta.digestBy}` : ''}</h3>
-        <pre style={{background: '#111', color: '#0f0', padding: 12, borderRadius: 8, overflow: 'auto'}}>{actions.length > 0 ? actions.map((a, i) => `${i + 1}. ${a}`).join('\n') : `Today: $45 leaked to subscriptions. Move $300 to Emergency. College on track +2%.\nAction: Cancel duplicate Adobe + Spotify family.`}</pre>
+      <section style={{marginTop: 14, border: '1px solid #e4e5e7', background: 'white', padding: 16, borderRadius: 14, boxShadow: '0 1px 2px rgba(16,24,40,0.06)'}}>
+        <h3 style={{margin: '0 0 8px', fontSize: 16}}>Daily CFO Digest{meta?.digestBy ? <span style={{fontWeight: 450, fontSize: 13, color: '#5b6470'}}> — by {meta.digestBy}</span> : ''}</h3>
+        <pre style={{background: '#17191d', color: '#e8eaed', padding: 12, borderRadius: 10, overflow: 'auto', fontSize: 13, margin: 0}}>{actions.length > 0 ? actions.map((a, i) => `${i + 1}. ${a}`).join('\n') : `Today: $45 leaked to subscriptions. Move $300 to Emergency. College on track +2%.\nAction: Cancel duplicate Adobe + Spotify family.`}</pre>
         {cancelDraft && (
           <div style={{border: '1px solid #d1d5db', background: '#fff', padding: 12, borderRadius: 12, marginTop: 12, fontSize: 14}}>
             <p style={{margin: '0 0 4px'}}><strong>Cancel email draft</strong> — {cancelDraft.merchant}</p>
