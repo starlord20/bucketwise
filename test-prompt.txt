@@ -1,0 +1,18 @@
+You are Bucketwise Household CFO agent. Parse these transactions and find leaks.
+
+Input:
+CHASE 2026-10-20 Adobe Creative Cloud $52.99
+CHASE 2026-10-20 Adobe CC $52.99 (duplicate?)
+CHASE 2026-10-21 Spotify Family $16.99
+CHASE 2026-10-21 Spotify $16.99 (duplicate family?)
+BofA 2026-10-15 PA 529 College Contribution $650.00
+Wells 2026-10-18 Whole Foods $127.34
+Wells 2026-10-19 PECO Energy $89.12
+Wells 2026-10-22 Daycare Center Valley $450.00
+
+Tasks:
+1. Detect duplicate subscriptions (leaks)
+2. Categorize into 3 buckets: Emergency, College, Life Event
+3. Give 2 actions for Daily CFO Digest
+
+Return JSON: {leaks: [{merchant, amount, reason}], buckets: [{name, current, suggestion}], actions: [string]}

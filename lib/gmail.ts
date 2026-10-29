@@ -12,6 +12,14 @@ export async function fetchGmailReceipts(accessToken: string) {
   return data.messages || [];
 }
 
+export async function fetchGmailMessageDetail(id: string, accessToken: string) {
+  const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}?format=metadata&metadataHeaders=Subject&metadataHeaders=Date`, {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  if (!res.ok) throw new Error(`Gmail message ${res.status}`);
+  return res.json();
+}
+
 export async function parseWithWonder(emailBody: string) {
   // Call lib/meta-api.ts buildBucketsWithWonder inside
   // This keeps PII local - only send anonymized summary to Llama if needed

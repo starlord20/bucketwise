@@ -1,0 +1,99 @@
+date,merchant,amount,category
+2026-08-01,Chase Checking Deposit,3500,income
+2026-08-02,Adobe Creative Cloud,52.99,subscription
+2026-08-03,Spotify Family,16.99,subscription
+2026-08-04,Whole Foods Market,118.42,groceries
+2026-08-05,PA 529 College Contribution,650,college
+2026-08-06,PECO Energy,94.20,utilities
+2026-08-07,Daycare Center Valley,450,childcare
+2026-08-08,Comcast Internet,85,utilities
+2026-08-10,Shell Gas,48.10,transport
+2026-08-11,Netflix,15.99,subscription
+2026-08-12,Whole Foods Market,96.15,groceries
+2026-08-13,Mortgage Payment,1850,housing
+2026-08-14,Car Insurance,120,insurance
+2026-08-15,Target,61.07,shopping
+2026-08-16,Starbucks,5.80,coffee
+2026-08-18,Amazon Purchase,72.44,shopping
+2026-08-20,CVS Pharmacy,19.99,health
+2026-08-22,Shell Gas,41.75,transport
+2026-08-24,Hulu,12.99,subscription
+2026-08-26,Whole Foods Market,112.88,groceries
+2026-09-01,Chase Checking Deposit,3500,income
+2026-09-02,Adobe Creative Cloud,52.99,subscription
+2026-09-03,Spotify Family,16.99,subscription
+2026-09-04,Whole Foods Market,131.07,groceries
+2026-09-05,PA 529 College Contribution,650,college
+2026-09-06,PECO Energy,87.55,utilities
+2026-09-07,Daycare Center Valley,450,childcare
+2026-09-08,Comcast Internet,85,utilities
+2026-09-10,Shell Gas,44.60,transport
+2026-09-11,Netflix,15.99,subscription
+2026-09-12,Whole Foods Market,99.63,groceries
+2026-09-13,Mortgage Payment,1850,housing
+2026-09-14,Car Insurance,120,insurance
+2026-09-15,Target,49.88,shopping
+2026-09-16,Starbucks,7.25,coffee
+2026-09-18,Amazon Purchase,58.30,shopping
+2026-09-20,CVS Pharmacy,27.41,health
+2026-09-22,Shell Gas,46.20,transport
+2026-09-24,Hulu,12.99,subscription
+2026-09-26,Whole Foods Market,108.29,groceries
+2026-10-01,Chase Checking Deposit,3500,income
+2026-10-01,Netflix,15.99,subscription
+2026-10-02,Adobe Creative Cloud,52.99,subscription
+2026-10-02,Hulu,12.99,subscription
+2026-10-03,Adobe CC,52.99,subscription
+2026-10-03,Spotify Family,16.99,subscription
+2026-10-03,YouTube Premium,13.99,subscription
+2026-10-04,Gym Membership,45,health
+2026-10-04,Spotify,16.99,subscription
+2026-10-05,PA 529 College Contribution,650,college
+2026-10-05,Petco,34.56,pets
+2026-10-05,Whole Foods Market,127.34,groceries
+2026-10-06,PECO Energy,89.12,utilities
+2026-10-06,Restaurant Depot,67.23,dining
+2026-10-07,Daycare Center Valley,450,childcare
+2026-10-07,Uber Ride,23.45,transport
+2026-10-08,Amazon Purchase,34.12,shopping
+2026-10-08,Comcast Internet,85,utilities
+2026-10-09,Home Depot,89.34,home
+2026-10-09,Starbucks,6.50,coffee
+2026-10-10,CVS Pharmacy,23.45,health
+2026-10-10,College Supplies,45.67,education
+2026-10-11,Emergency Fund Transfer,300,savings
+2026-10-11,Shell Gas,45.00,transport
+2026-10-12,Amazon Purchase,67.89,shopping
+2026-10-12,Life Event Fund Transfer,200,savings
+2026-10-13,Mortgage Payment,1850,housing
+2026-10-13,PA 529 College Contribution,650,college
+2026-10-14,Car Insurance,120,insurance
+2026-10-14,Whole Foods,134.56,groceries
+2026-10-15,Shell Gas,56.78,transport
+2026-10-15,Target,54.23,shopping
+2026-10-16,CVS,12.34,health
+2026-10-16,PA 529 College Contribution,650,college
+2026-10-17,Adobe Creative Cloud,52.99,subscription
+2026-10-17,Starbucks,5.75,coffee
+2026-10-18,Spotify Family,16.99,subscription
+2026-10-18,Target,78.90,shopping
+2026-10-19,Mortgage Payment,1850,housing
+2026-10-19,Whole Foods Market,98.45,groceries
+2026-10-20,Daycare Center Valley,450,childcare
+2026-10-20,Life Insurance Premium,85,insurance
+2026-10-21,Adobe Creative Cloud,52.99,subscription
+2026-10-21,Emergency Fund Transfer,300,savings
+2026-10-22,Daycare Center Valley,450,childcare
+2026-10-22,Spotify Family,16.99,subscription
+2026-10-23,Costco Wholesale,156.78,groceries
+2026-10-24,Chase Checking Deposit,3500,income
+2026-10-24,Whole Foods,109.87,groceries
+2026-10-25,College Fund Transfer,300,savings
+2026-10-26,Life Event Fund Transfer,200,savings
+2026-10-27,Adobe Creative Cloud,52.99,subscription
+2026-10-27,Netflix,15.99,subscription
+2026-10-28,Hulu,12.99,subscription
+2026-10-28,Spotify,16.99,subscription
+2026-10-29,Whole Foods,112.34,groceries
+2026-10-30,PECO Energy,92.12,utilities
+2026-10-31,Daycare Center Valley,450,childcare

@@ -1,3 +1,5 @@
+export const metadata = { title: 'Bucketwise — Household CFO' };
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">

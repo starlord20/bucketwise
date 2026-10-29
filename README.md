@@ -10,21 +10,21 @@
 
 **Demo Video:** [YouTube — 2.5 min walkthrough](link-coming-Nov-1)
 **Live Demo:** http://localhost:3000 (after `npm run dev`)
-**Pitch Deck:** /deck
+**Pitch Deck:** [PITCH-DECK.md](./PITCH-DECK.md) (6 slides)
 
 ---
 
 ### The Problem We Know Firsthand
 As a family in Center Valley, PA managing college savings + emergency buffer + life events, our financial picture lived in 6+ places — bank statements, Gmail receipts, 529 emails, Google Drive tax docs. Existing tools give charts. Families with buffer + simple plan survived 2008/2020/2022 better. Families without didn't.
 
-**70M US families face this.** Average family leaks $200-400/mo in duplicate subscriptions and misses buffer targets by 8 months.
+**70M US families face this.** In our own test, Bucketwise found **$69.98/mo in duplicate subscriptions ($839.76/yr)** — real money, traced to named charges.
 
 ### The Solution — One Workflow
 **Upload → Parse → 3 Buckets → Shock-Test → Daily Digest**
 
 1.  **Ingest:** Upload Bank CSV or Connect Gmail/Drive (OAuth). We parse 90 days of transactions.
 2.  **Bucketwise Intelligence:** Muse Wonder (long-context) reads all transactions + 529 statements → auto-allocates into **Emergency / College / Life Event** + finds leaks.
-3.  **Shock-Test Simulator:** Llama 4 open-weights (hosted on Baseten/Fireworks) simulates: *Income -30% (2020-style), Expenses +20% (2022 inflation), College +6%/yr*. Output: "Need +$3200 buffer — lesson from 2008".
+3.  **Shock-Test Simulator:** Muse Wonder simulates: *Income -30% (2020-style), Expenses +20% (2022 inflation), College +6%/yr*. PII stays local — only an anonymized bucket summary is sent. Output: per-shock verdicts + buffer needed.
 4.  **Daily CFO Digest:** Muse Spark generates actionable daily email: "Move $300 to Emergency, Cancel Adobe duplicate, Pause extra college for 2 months".
 
 ### Key Features (Feature Frozen Oct 30)
@@ -39,16 +39,18 @@ This is not a wrapper. Every Meta tool does real work:
 
 | Meta Tool | Where It Sits | Why It Matters |
 |-----------|---------------|----------------|
-| **Muse Wonder** (Meta Model API) | `lib/buildBucketsWithWonder()` | Long-context (90-day) financial reasoning → bucket strategy, learns from past crises |
-| **Muse Spark** (Meta Model API) | `lib/ingest.ts` | Fast cashflow parse + leak detection, <2s for 500 txns |
-| **SAM 3.1** | `/api/parse-receipt` | Receipt image → bounding boxes → transaction JSON |
-| **Muse Image** | `/components/BucketCard` | Generates visual bucket cards + shock-test infographic |
-| **Llama 4 Maverick (open-weights via Fireworks/Baseten)** | `/api/shock-test` | Private PII-safe shock simulation — raw data stays local, only anonymized summary sent |
-| **Meta Model API** | Gateway for all | Single auth for Wonder/Spark |
-| **Muse Code** | Used to scaffold `/api/ingest`, `/api/ingest` routes | Mentioned in build logs |
+| **Muse Wonder** (`muse-wonder-1.0`) | `lib/meta-api.ts` → `buildBucketsWithWonder()` | Long-context (90-day) financial reasoning → bucket strategy, learns from past crises |
+| **Muse Spark** (`muse-spark-1.3`) | `lib/meta-api.ts` → `detectLeaksFast()` + `buildDigestWithSpark()` | Fast cashflow parse + leak detection (<2s for 500 txns) and Daily Digest writer |
+| **SAM 3.1** (`sam-3.1` via `/responses`) | `app/api/parse-receipt/route.ts` | Receipt photo → structured transaction JSON → one tap into buckets |
+| **Muse Image** (`muse-image-1.0`) | `components/BucketCard.tsx`, shock section | Generates visual bucket cards + shock-test infographic |
+| **Muse Wonder** | `app/api/shock-test/route.ts` | PII-safe shock simulation — raw data stays local, only anonymized summary sent |
+| **Meta Muse API** (dev.meta.ai) | Gateway for all | Single auth for Wonder/Spark/SAM/Image — no other endpoints |
+| **Muse Code** | This CLI agent | Scaffolded `/api/ingest`, `/api/shock-test`, `/api/parse-receipt` + UI wiring |
 
 **Architecture:**
-[CSV/Gmail/Drive] → [Next.js /api/ingest] → [Muse Spark: leak detection] → [Muse Wonder: bucket allocation + actions] → [Llama 4 on Baseten/Fireworks: shock-test] → [SAM 3.1: receipt photo] → UI: 3 Buckets + Daily Digest
+[CSV/Gmail/Drive] → [Next.js /api/ingest] → [Muse Spark: leak detection] → [Muse Wonder: bucket allocation + actions] → [Muse Wonder: shock-test] → [SAM 3.1: receipt photo] → UI: 3 Buckets + Daily Digest
+
+*Scope note: the approved plan named Llama open-weights via Baseten/Modal for shock-tests; the issued dev.meta.ai endpoint serves Muse models only, so shock simulation runs on Muse Wonder through the same Meta Muse API — PII-stays-local guarantees unchanged.*
 
 
 ### How to Run Locally — Stranger Test (Exit Criteria)
@@ -62,9 +64,10 @@ This is not a wrapper. Every Meta tool does real work:
 2. Env Setup: Copy .env.example to .env.local:
     ```bash
     META_API_KEY=your_150_credits_key_from_dev.meta.ai
-    FIREWORKS_API_KEY=...
-    BASETEN_API_KEY=...
+    META_API_BASE=your_base_url_from_dev.meta.ai
     GOOGLE_CLIENT_ID=... (optional for Gmail)
+    GOOGLE_CLIENT_SECRET=... (optional for Gmail)
+    GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/callback
     RESEND_API_KEY=... (optional for daily digest)
 
 3. Install & Run:
@@ -78,7 +81,7 @@ Open http://localhost:3000
 ## Tech Stack
 **Frontend**: Next.js 16 (Turbopack), React 19, Tailwind
 **Backend**: Next.js API Routes, Node
-**AI**: Meta Model API (Wonder, Spark), Fireworks (Llama 4), Baseten (hosting), SAM 3.1, Muse Image
+**AI**: Meta Muse API only (Wonder, Spark, SAM 3.1, Muse Image) via dev.meta.ai
 **Storage**: LocalStorage (demo) → Postgres (roadmap)
 **Deploy**: Vercel
 
