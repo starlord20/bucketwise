@@ -140,14 +140,14 @@ function detectLeaksLocal(transactions: Transaction[]): Leak[] {
   return leaks;
 }
 
-function safeParseJSON(text: string): any {
+export function safeParseJSON(text: string): any {
   try {
     return JSON.parse(text);
   } catch {
     const m = text.match(/\{[\s\S]*\}/);
     if (m) {
       try {
-        return JSON.parse(m[1]);
+        return JSON.parse(m[0]);
       } catch {
         return null;
       }
@@ -307,10 +307,13 @@ export async function shockTestWithWonder(buckets: any) {
   }
   // NOTE: explicit budget required — default 800 tokens gets eaten by
   // reasoning and comes back content:null (was the {"raw":null} bug).
+  // Raised to 4000: the projection + checklist output is large and low-effort
+  // reasoning still burns ~2k tokens (seen live: 1983 reasoning → null content
+  // at a 2500 budget). Same fix as buildBucketsWithWonder.
   const resp = await callMetaModel({
     model: MODELS.wonder,
     prompt: `Simulate 3 shocks on buckets ${JSON.stringify(buckets).slice(0, 4000)}: Income -30% for 4mo (2020-style), Expenses +20% (2022-style inflation), College cost +6%/yr. College inflation applies across all three. Return JSON {bufferNeeded, checklist, perShock:[{name, verdict, score}], projection:{y2026:{Emergency:number,College:number,LifeEvent:number},y2027:{Emergency:number,College:number,LifeEvent:number},shockAdjustedEmergency2026:number,assumptions:string}} with perShock in chronological order: 2008 financial crisis, 2020 income shock, 2022 inflation shock. score is a 0-100 resilience score for that shock (100 = fully funded to withstand it, 0 = fails immediately); verdict is one sentence. projection assumes current monthly contributions continue uninterrupted (savings math only, no stock picking; College target grows 6%/yr); shockAdjustedEmergency2026 is the Emergency balance if a 2020-style shock hits mid-2026.`,
-    max_tokens: 2500,
+    max_tokens: 4000,
     effort: "low",
   });
   const parsed = safeParseJSON(resp.choices[0].message.content ?? "");

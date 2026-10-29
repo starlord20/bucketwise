@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "node --test test/",
+    "verify": "npm test && npx tsc --noEmit && npm run build"
   },
   "dependencies": {
     "next": "^16.4.3",
