@@ -1,0 +1,40 @@
+HOW TO USE: send yourself an email in Gmail with the Subject and Body below
+(copy-paste). Include the bracketed keyword so Bucketwise finds it.
+Send from/to your own address — no real money moves.
+
+IMPORTANT: put the $ amount in the BODY only, once per charge.
+Anything with a $ sign becomes one transaction dated the send day, so a
+repeated amount in the subject would look like a same-day duplicate.
+Email 3 intentionally lists TWO $52.99 charges to demo duplicate detection.
+
+--- EMAIL 1: payroll deposit (income, 1 txn) ---
+Subject: Direct Deposit Posted: PAYROLL [statement]
+Body:
+Your direct deposit of $3,500.00 from PAYROLL posted to checking ending 4412
+on Oct 31, 2026. Reply STOP to end alerts.
+
+--- EMAIL 2: 529 contribution (college, 1 txn) ---
+Subject: PA 529 Contribution Confirmed [529]
+Body:
+Thank you! Your PA 529 College Contribution of $650.00 was invested on
+Oct 15, 2026 for beneficiary College Fund. This contribution may qualify
+for the PA state tax deduction.
+
+--- EMAIL 3: duplicate subscription charges (2 txns = 1 leak) ---
+Subject: Your Adobe receipt [receipt]
+Body:
+Thanks for your Adobe Creative Cloud renewal. Amount charged: $52.99 on
+Oct 17, 2026. A second charge of $52.99 under the name Adobe CC appeared
+on Oct 18, 2026 — if you did not authorize it, reply to dispute it.
+
+--- EMAIL 4: store receipt (groceries, 1 txn) ---
+Subject: Whole Foods receipt [receipt]
+Body:
+Thanks for shopping with us on Oct 22, 2026. Total charged: $127.34.
+Items: produce, dairy, pantry staples. Opt out of paper receipts anytime.
+
+--- EMAIL 5: utility e-bill (recurring bill, NOT a leak, 1 txn) ---
+Subject: PECO Energy bill ready [statement]
+Body:
+Your PECO Energy bill for October 2026 is $89.12, due Nov 12, 2026.
+This is your regular monthly bill. Autopay is ON.

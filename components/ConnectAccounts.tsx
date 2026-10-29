@@ -11,6 +11,7 @@ export type IngestResult = {
   mock?: boolean;
   source?: string;
   updatedAt?: string;
+  dateRange?: { from: string; to: string; days: number } | null;
   raw?: string;
   error?: string;
 };

@@ -299,15 +299,24 @@ export async function parseReceiptsWithSAM(imageDataUrl: string) {
 
 // Shock-test runs on Muse Wonder (long-context reasoning over bucket history).
 // PII stays local: only the anonymized bucket summary is sent.
+const SHOCK_MOCK =
+  "2020-style -30% income: Need +$3200 emergency buffer. Lesson from 2008: prioritize buffer over extra college contribution for 3 months.";
 export async function shockTestWithWonder(buckets: any) {
   if (!process.env.META_API_KEY) {
-    return {
-      mock: "2020-style -30% income: Need +$3200 emergency buffer. Lesson from 2008: prioritize buffer over extra college contribution for 3 months.",
-    };
+    return { mock: SHOCK_MOCK };
   }
+  // NOTE: explicit budget required — default 800 tokens gets eaten by
+  // reasoning and comes back content:null (was the {"raw":null} bug).
   const resp = await callMetaModel({
     model: MODELS.wonder,
-    prompt: `Simulate 3 shocks on buckets ${JSON.stringify(buckets).slice(0, 4000)}: 1) Income -30% 4mo like 2020, 2) Expenses +20% like 2022 inflation, 3) College cost +6%/yr. Return JSON {bufferNeeded, checklist, perShock:[{name, verdict}]}.`,
+    prompt: `Simulate 3 shocks on buckets ${JSON.stringify(buckets).slice(0, 4000)}: Income -30% for 4mo (2020-style), Expenses +20% (2022-style inflation), College cost +6%/yr. College inflation applies across all three. Return JSON {bufferNeeded, checklist, perShock:[{name, verdict, score}], projection:{y2026:{Emergency:number,College:number,LifeEvent:number},y2027:{Emergency:number,College:number,LifeEvent:number},shockAdjustedEmergency2026:number,assumptions:string}} with perShock in chronological order: 2008 financial crisis, 2020 income shock, 2022 inflation shock. score is a 0-100 resilience score for that shock (100 = fully funded to withstand it, 0 = fails immediately); verdict is one sentence. projection assumes current monthly contributions continue uninterrupted (savings math only, no stock picking; College target grows 6%/yr); shockAdjustedEmergency2026 is the Emergency balance if a 2020-style shock hits mid-2026.`,
+    max_tokens: 2500,
+    effort: "low",
   });
-  return safeParseJSON(resp.choices[0].message.content ?? "") ?? { raw: resp.choices[0].message.content };
+  const parsed = safeParseJSON(resp.choices[0].message.content ?? "");
+  if (!parsed) {
+    console.error("[meta-api] Shock test returned non-JSON, mock fallback");
+    return { mock: SHOCK_MOCK };
+  }
+  return parsed;
 }

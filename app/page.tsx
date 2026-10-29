@@ -16,15 +16,60 @@ function withProgress(b: BucketIn): Bucket {
   return { ...b, name: (['Emergency', 'College', 'Life Event'] as const).includes(b.name as Bucket['name']) ? (b.name as Bucket['name']) : 'Emergency', current, target, monthly_needed: num(b.monthly_needed), progress: Math.min(100, Math.max(0, Math.round((current / target) * 100))) };
 }
 
-type ShockData = { bufferNeeded?: string; checklist?: string[]; perShock?: { name: string; verdict: string }[]; mock?: string };
+type ShockProjection = { y2026?: { Emergency?: number; College?: number; LifeEvent?: number }; y2027?: { Emergency?: number; College?: number; LifeEvent?: number }; shockAdjustedEmergency2026?: number; assumptions?: string };
+type ShockData = { bufferNeeded?: string; checklist?: string[]; perShock?: { name: string; verdict: string; score?: number }[]; projection?: ShockProjection; mock?: string };
+
+const GAUGE_COLORS = ['#3b82f6', '#10b981', '#f59e0b'];
+
+function ScoreGauge({ score, label, color }: { score: number; label: string; color: string }) {
+  const angle = (-90 + (score / 100) * 180) * (Math.PI / 180);
+  const nx = 60 + 38 * Math.sin(angle);
+  const ny = 60 - 38 * Math.cos(angle);
+  return (
+    <div style={{ textAlign: 'center', minWidth: 110 }}>
+      <svg width="120" height="72" viewBox="0 0 120 72" role="img" aria-label={`${label} resilience score ${score} out of 100`}>
+        <path d="M12,60 A48,48 0 0 1 108,60" fill="none" stroke="#e5e7eb" strokeWidth="10" strokeLinecap="round" />
+        <path d="M12,60 A48,48 0 0 1 108,60" fill="none" stroke={color} strokeWidth="10" strokeLinecap="round" strokeDasharray={`${(score / 100) * 151} 151`} opacity={0.45} />
+        <line x1="60" y1="60" x2={nx} y2={ny} stroke={color} strokeWidth="4" strokeLinecap="round" />
+        <circle cx="60" cy="60" r="6" fill={color} />
+      </svg>
+      <div style={{ fontSize: 13, fontWeight: 600 }}>{label}</div>
+      <div style={{ fontSize: 18, fontWeight: 700, color }}>{score}<span style={{ fontSize: 12, fontWeight: 400 }}>/100</span></div>
+    </div>
+  );
+}
 
 function ShockView({ text }: { text: string }) {
-  let d: ShockData | null = null;
+  let d: (ShockData & { live?: boolean }) | null = null;
   try { d = JSON.parse(text); } catch { /* fall through to raw */ }
   if (!d || (!d.bufferNeeded && !d.checklist && !d.perShock && !d.mock)) {
     return <pre style={{background: '#111', color: '#0f0', padding: 12, borderRadius: 8, overflow: 'auto', marginTop: 12}}>{text}</pre>;
   }
-  if (d.mock) return <p style={{marginTop: 12}}>{d.mock}</p>;
+  if (d.mock) return <p style={{marginTop: 12}}><strong>Reference scenario</strong> (live shock-test unavailable — hit Run Shock Test again): {d.mock}</p>;
+  const proj = d.projection;
+  const money = (v: unknown) => (typeof v === 'number' && !isNaN(v) ? '$' + Math.round(v).toLocaleString() : '—');
+  const projView = proj && (proj.y2026 || proj.y2027) ? (
+    <div style={{marginTop: 16, border: '1px solid #dbeafe', background: '#eff6ff', padding: 12, borderRadius: 12}}>
+      <p style={{margin: '0 0 8px'}}><strong>Future state — where current contributions land you</strong></p>
+      <table style={{fontSize: 13, borderCollapse: 'collapse', width: '100%', maxWidth: 480}}>
+        <thead><tr style={{textAlign: 'left', color: '#1e3a5f'}}><th>Year-end</th><th>Emergency</th><th>College</th><th>Life Event</th></tr></thead>
+        <tbody>
+          {(['y2026', 'y2027'] as const).map((y) => proj[y] && (
+            <tr key={y} style={{borderTop: '1px solid #dbeafe'}}>
+              <td><strong>Dec {y === 'y2026' ? '2026' : '2027'}</strong></td>
+              <td>{money(proj[y]!.Emergency)}</td>
+              <td>{money(proj[y]!.College)}</td>
+              <td>{money(proj[y]!.LifeEvent)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {typeof proj.shockAdjustedEmergency2026 === 'number' && !isNaN(proj.shockAdjustedEmergency2026) && (
+        <p style={{margin: '8px 0 0', fontSize: 13}}>If a 2020-style shock hits mid-2026, Emergency lands at <strong>{money(proj.shockAdjustedEmergency2026)}</strong> instead.</p>
+      )}
+      {proj.assumptions && <p style={{margin: '8px 0 0', fontSize: 12, color: '#4b5563'}}>Assumes: {proj.assumptions}</p>}
+    </div>
+  ) : null;
   return (
     <div style={{marginTop: 12}}>
       {d.bufferNeeded && <p><strong>Buffer needed:</strong> {d.bufferNeeded}</p>}
@@ -32,7 +77,32 @@ function ShockView({ text }: { text: string }) {
         <ul>{d.checklist.map((c, i) => <li key={i}>{c}</li>)}</ul>
       )}
       {d.perShock && d.perShock.length > 0 && (
-        <ul>{d.perShock.map((s, i) => <li key={i}><strong>{s.name}:</strong> {s.verdict}</li>)}</ul>
+        <ul>{d.perShock.map((s, i) => {
+          const score = typeof s.score === 'number' && !isNaN(s.score) ? Math.min(100, Math.max(0, Math.round(s.score))) : null;
+          const color = score === null ? '#6b7280' : score >= 70 ? '#10b981' : score >= 40 ? '#f59e0b' : '#ef4444';
+          return (
+            <li key={i} style={{marginBottom: 8}}>
+              <strong>{s.name}{score !== null ? ` — Score: ${score}/100` : ''}:</strong> {s.verdict}
+              {score !== null && (
+                <div style={{height: 8, background: '#eee', borderRadius: 8, overflow: 'hidden', marginTop: 4, maxWidth: 320}}>
+                  <div style={{width: `${score}%`, height: '100%', background: color}} />
+                </div>
+              )}
+            </li>
+          );
+        })}</ul>
+      )}
+      {projView}
+      {d.perShock && d.perShock.some((s) => typeof s.score === 'number' && !isNaN(s.score)) && (
+        <div>
+          <p style={{margin: '16px 0 8px'}}><strong>Stress-test gauges</strong> <span style={{color: '#6b7280', fontSize: 13}}>— needle position is the live score</span></p>
+          <div style={{display: 'flex', gap: 16, flexWrap: 'wrap'}}>
+            {d.perShock.map((s, i) => {
+              const score = Math.min(100, Math.max(0, Math.round(Number(s.score))));
+              return <ScoreGauge key={i} score={score} label={s.name} color={GAUGE_COLORS[i % GAUGE_COLORS.length]} />;
+            })}
+          </div>
+        </div>
       )}
     </div>
   );
@@ -42,8 +112,10 @@ export default function Page() {
   const [buckets, setBuckets] = useState<Bucket[]>(DEFAULT_BUCKETS);
   const [leaks, setLeaks] = useState<IngestResult['leaks']>([]);
   const [actions, setActions] = useState<string[]>([]);
-  const [meta, setMeta] = useState<{ count: number; mock?: boolean; digestBy?: string; source?: string; updatedAt?: string } | null>(null);
+  const [meta, setMeta] = useState<{ count: number; mock?: boolean; digestBy?: string; source?: string; updatedAt?: string; dateRange?: { from: string; to: string; days: number } | null } | null>(null);
+  const today = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
   const [loading, setLoading] = useState(false);
+  const [finished, setFinished] = useState(false);
   const [stages, setStages] = useState<string[]>(CSV_STAGES);
   const [stage, setStage] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -53,12 +125,23 @@ export default function Page() {
   const [gmail, setGmail] = useState<{ gmailConfigured: boolean } | null>(null);
   const [receipt, setReceipt] = useState<ReceiptResult | null>(null);
   const [cancelDraft, setCancelDraft] = useState<IngestResult['cancelDraft']>(null);
+
+  // Last good result survives reloads (demo insurance). Never the raw key —
+  // only analysis output + the user's own last CSV text.
+  const LS_KEY = 'bucketwise:lastResult';
+  function persistResult(data: IngestResult, buckets: Bucket[], csv: string | null) {
+    try {
+      const { raw, ...rest } = data;
+      localStorage.setItem(LS_KEY, JSON.stringify({ ...rest, buckets, csv }));
+    } catch { /* quota or privacy mode — app works without it */ }
+  }
   const lastCsvRef = useRef<string | null>(null);
   lastCsvRef.current = lastCsv;
 
   function startImport(kind: 'csv' | 'gmail') {
     setStages(kind === 'gmail' ? GMAIL_STAGES : CSV_STAGES);
     setStage(0);
+    setFinished(false);
     setLoading(true);
     setError(null);
   }
@@ -67,12 +150,18 @@ export default function Page() {
     setLoading(false);
     if (data.error) { setError(data.error); return; }
     setError(null);
+    // Keep the bar up just long enough to show 100% + all checks.
+    setFinished(true);
+    setTimeout(() => setFinished(false), 1800);
+    const csv = data.raw ?? lastCsvRef.current;
     if (data.raw) setLastCsv(data.raw);
-    if (data.buckets) setBuckets(data.buckets.map(withProgress));
+    const mapped = (data.buckets ?? []).map(withProgress);
+    if (data.buckets) setBuckets(mapped);
     setLeaks(data.leaks ?? []);
     setActions(data.actions ?? []);
     setCancelDraft(data.cancelDraft ?? null);
-    setMeta({ count: data.transactionsCount, mock: data.mock, digestBy: data.actionsSource, source: data.source, updatedAt: data.updatedAt });
+    setMeta({ count: data.transactionsCount, mock: data.mock, digestBy: data.actionsSource, source: data.source, updatedAt: data.updatedAt, dateRange: data.dateRange ?? null });
+    persistResult(data, mapped.length > 0 ? mapped : buckets, csv);
   }
 
   async function runIngest(payload: Record<string, unknown>, kind: 'csv' | 'gmail') {
@@ -98,6 +187,27 @@ export default function Page() {
   // Connections status + Gmail OAuth return (?gmailImport=<id> / ?gmailError=...).
   useEffect(() => {
     fetch('/api/auth/status').then((r) => r.json()).then(setGmail).catch(() => {});
+    // Restore last good analysis so a reload never shows stale placeholders.
+    try {
+      const saved = JSON.parse(localStorage.getItem(LS_KEY) ?? 'null');
+      if (saved && Array.isArray(saved.buckets) && saved.buckets.length > 0) {
+        setBuckets(saved.buckets);
+        setLeaks(Array.isArray(saved.leaks) ? saved.leaks : []);
+        setActions(Array.isArray(saved.actions) ? saved.actions : []);
+        setCancelDraft(saved.cancelDraft ?? null);
+        if (saved.csv) { setLastCsv(saved.csv); lastCsvRef.current = saved.csv; }
+        setMeta({
+          count: num(saved.transactionsCount),
+          mock: !!saved.mock,
+          digestBy: saved.actionsSource,
+          source: saved.source,
+          updatedAt: saved.updatedAt,
+          dateRange: saved.dateRange ?? null,
+        });
+      }
+      const savedShock = localStorage.getItem('bucketwise:shock');
+      if (savedShock) setShock(savedShock);
+    } catch { /* corrupted cache — start fresh */ }
     const q = new URLSearchParams(window.location.search);
     const err = q.get('gmailError');
     if (err) {
@@ -130,7 +240,9 @@ export default function Page() {
     try {
       const r = await fetch('/api/shock-test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ buckets }) });
       const d = await r.json();
-      setShock(typeof d === 'string' ? d : JSON.stringify(d));
+      const text = typeof d === 'string' ? d : JSON.stringify(d);
+      setShock(text);
+      try { localStorage.setItem('bucketwise:shock', text); } catch { /* ignore */ }
     } catch (e: any) {
       setShock(`Shock test failed: ${e?.message ?? 'unknown error'}`);
     } finally {
@@ -141,13 +253,13 @@ export default function Page() {
   return (
     <main style={{maxWidth: 900, margin: '0 auto', padding: 24, fontFamily: 'system-ui'}}>
       <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
-        <img src="/logo.png" alt="Bucketwise logo" width={56} height={56} style={{borderRadius: 12}} />
+        <img src="/icon-buckets.webp" alt="Bucketwise buckets mark" width={56} height={56} style={{borderRadius: 12}} />
         <h1 style={{margin: 0}}>Bucketwise</h1>
       </div>
       <p>Household CFO — Financial Freedom OS. Meta Global AI Developer Hackathon, Indie Track.</p>
       <p style={{background: '#f0f4ff', padding: 12, borderRadius: 8}}>Status: Gmail ingest → Wonder parsing → Spark leak detection → Wonder shock-test</p>
       <ConnectAccounts onStart={(kind) => startImport(kind)} onResult={handleResult} onReceipt={setReceipt} />
-      {loading && <ImportProgress stages={stages} current={stage} />}
+      {(loading || finished) && <ImportProgress stages={stages} current={stage} complete={!loading} />}
       {receipt && (receipt.error ? (
         <p style={{color: '#b91c1c'}}>Receipt scan failed: {receipt.error}</p>
       ) : (
@@ -164,6 +276,11 @@ export default function Page() {
       ))}
       {error && <p style={{color: '#b91c1c'}}>Upload failed: {error}</p>}
       {meta && <p style={{color: '#666', fontSize: 14}}>Analyzed {meta.count} transactions{meta.mock ? ' (mock — set META_API_KEY for live Wonder/Spark)' : ' (live Wonder + Spark)'}.</p>}
+      {meta?.dateRange && (
+        <p style={{color: '#1e3a5f', fontSize: 14, background: '#eff6ff', padding: '8px 12px', borderRadius: 8}}>
+          History: {meta.dateRange.from} → {meta.dateRange.to} ({meta.dateRange.days} days analyzed) · Report date: {today}
+        </p>
+      )}
       <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 16, marginTop: 24}}>
         {buckets.map(b => <BucketCard key={b.name} bucket={b} />)}
       </div>
@@ -202,13 +319,10 @@ export default function Page() {
         ))}
       </section>
       <section style={{marginTop: 32, border: '1px solid #ddd', padding: 16, borderRadius: 12}}>
-        <h2>Shock-Test Simulator (2020 / 2008 / 2022)</h2>
+        <h2>Shock-Test Simulator (2008 / 2020 / 2022)</h2>
         <p>What if income drops 30% for 4 months? Results will appear here after calling /api/shock-test</p>
         <button onClick={runShockTest} disabled={shockBusy} style={{cursor: 'pointer'}}>{shockBusy ? 'Running…' : 'Run Shock Test'}</button>
         {shock && <ShockView text={shock} />}
-        {shock && !shock.startsWith('Shock test failed') && (
-          <img src="/bucket-art/shock.webp" alt="Shock-test infographic: 2020, 2008 and 2022 crisis gauges" width={900} height={900} style={{maxWidth: '100%', height: 'auto', borderRadius: 12, marginTop: 12}} />
-        )}
       </section>
       <section style={{marginTop: 24}}>
         <h3>Daily CFO Digest{meta?.digestBy ? ` — by ${meta.digestBy}` : ''}</h3>

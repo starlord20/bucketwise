@@ -43,6 +43,19 @@ export async function POST(req: NextRequest) {
           ? "Gmail + Drive"
           : "Bank CSV";
     const updatedAt = new Date().toISOString();
+    // Historical window: the actual date span the analysis covers.
+    const times = transactions
+      .map((t: any) => new Date(t.date).getTime())
+      .filter((n: number) => !isNaN(n))
+      .sort((a: number, b: number) => a - b);
+    const dateRange =
+      times.length > 0
+        ? {
+            from: new Date(times[0]).toISOString().slice(0, 10),
+            to: new Date(times[times.length - 1]).toISOString().slice(0, 10),
+            days: Math.max(1, Math.round((times[times.length - 1] - times[0]) / 86400000) + 1),
+          }
+        : null;
     const buckets = ((wonderResult as any).buckets ?? []).map((b: any) => ({ ...b, source, updatedAt }));
 
     return NextResponse.json({
@@ -56,6 +69,7 @@ export async function POST(req: NextRequest) {
       mock: (wonderResult as any).mock && sparkResult.mock && digest.mock,
       source,
       updatedAt,
+      dateRange,
     });
   } catch (e:any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
