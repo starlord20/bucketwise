@@ -22,7 +22,7 @@
 - [ ] Uploaded unlisted to YouTube, link in README + submission form
 
 ## Filing
-- [ ] Submission form filled completely (use Indie-track scope text, not startup)
+- [x] Submission text drafted (`SUBMISSION-DRAFT.md` — Indie-track scope, consistent numbers, links; needs YouTube link)
 - [ ] Numbers consistent everywhere: $69.98/mo, 98 txns / 90 days, Emergency $15k / College $250k / Life Event $30k
 - [ ] Impact claim matches demo ($69.98/mo recovered, $839.76/yr — named charges)
 - [ ] Submitted by noon Nov 4; screenshot confirmation; Discord post
