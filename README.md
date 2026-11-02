@@ -11,7 +11,7 @@
 
 **Demo Video:** [YouTube — 2.5 min walkthrough](link-coming-Nov-1)
 **Live Demo:** <http://localhost:3000> (after `npm run dev`)
-**Pitch Deck:** [PITCH-DECK.md](./PITCH-DECK.md) (6 slides)
+**Pitch Deck:** [Local Instance](<http://localhost:3000/pitch-deck.html>) or [Hosted in Vercel](<https://bucketwise.vercel.app/pitch-deck.html>) (6 slides)
 
 ---
 
