@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bucketwise — Household CFO | Pitch Deck</title>
+<style>
+  :root { --ink: #17191d; --muted: #5b6470; --line: #e4e5e7; --bg: #f4f5f7; --card: #ffffff; --blue: #2563eb; --teal: #0f766e; --amber: #b45309; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  body { display: flex; align-items: center; justify-content: center; }
+  .deck { width: min(1060px, 94vw); }
+  .slide { display: none; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 56px 64px; min-height: 560px; box-shadow: 0 2px 8px rgba(16,24,40,.08); }
+  .slide.active { display: block; }
+  .kicker { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
+  h1 { font-size: 52px; line-height: 1.05; letter-spacing: -.02em; margin: 0 0 12px; }
+  h2 { font-size: 34px; letter-spacing: -.015em; margin: 0 0 16px; }
+  p, li { font-size: 20px; line-height: 1.5; }
+  p.sub { color: var(--muted); font-size: 22px; margin: 0; }
+  ul { padding-left: 24px; margin: 12px 0 0; }
+  li { margin-bottom: 10px; }
+  .big { font-size: 64px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; margin: 8px 0; }
+  .buckets { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+  .bucket { flex: 1; min-width: 180px; border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .bucket b { display: block; font-size: 15px; }
+  .bucket span { font-size: 26px; font-weight: 750; font-variant-numeric: tabular-nums; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 5px; margin-right: 8px; }
+  table { border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 18px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-size: 14px; text-transform: uppercase; letter-spacing: .08em; }
+  code { font-size: .85em; background: #f0f1f3; padding: 2px 8px; border-radius: 6px; }
+  .nav { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
+  .nav button { padding: 10px 22px; border-radius: 999px; border: 1px solid var(--ink); background: #fff; font-weight: 650; font-size: 15px; cursor: pointer; }
+  .nav button.primary { background: var(--ink); color: #fff; }
+  .count { margin-left: auto; color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+  .foot { margin-top: 14px; color: var(--muted); font-size: 13px; text-align: center; }
+  @media print { body { display: block; } .nav, .foot { display: none; } .slide { display: block !important; min-height: 0; break-inside: avoid; margin-bottom: 24px; box-shadow: none; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<main class="deck" aria-live="polite">
+  <!-- 1. Title -->
+  <section class="slide active" aria-label="Title">
+    <p class="kicker">Indie Track · Meta Global AI Developer Hackathon 2026</p>
+    <h1>Bucketwise —<br>Household CFO</h1>
+    <p class="sub">Financial Freedom OS: Actions, Not Charts.</p>
+    <p class="sub" style="margin-top:16px">Karthik Ramani · Center Valley, PA · Team Bucketwise</p>
+  </section>
+  <!-- 2. Problem -->
+  <section class="slide" aria-label="Problem">
+    <p class="kicker">01 · Problem</p>
+    <h2>70M US families run the household across 6+ apps.</h2>
+    <ul>
+      <li>Bank statements, Gmail receipts, 529 emails, Drive tax docs — nowhere together.</li>
+      <li>Existing tools give charts. Families need to survive the next shock.</li>
+      <li>Families with a buffer + a simple plan survived 2008 / 2020 / 2022 better. Families without didn't.</li>
+    </ul>
+  </section>
+  <!-- 3. Solution -->
+  <section class="slide" aria-label="Solution">
+    <p class="kicker">02 · Solution</p>
+    <h2>Upload → Parse → 3 Buckets → Shock-Test → Daily Digest</h2>
+    <div class="buckets">
+      <div class="bucket"><b><span class="dot" style="background:var(--blue)"></span>Emergency</b><span>$15k</span><br>3–6 months runway</div>
+      <div class="bucket"><b><span class="dot" style="background:var(--teal)"></span>College</b><span>$250k</span><br>PA 529 to age 18</div>
+      <div class="bucket"><b><span class="dot" style="background:var(--amber)"></span>Life Event</b><span>$30k</span><br>House · car · move</div>
+    </div>
+    <p style="margin-top:20px">Wonder allocates every dollar · Spark finds leaks + writes the digest · Wonder shock-tests history.</p>
+  </section>
+  <!-- 4. Proof -->
+  <section class="slide" aria-label="Proof">
+    <p class="kicker">03 · Proof — real numbers, our own test</p>
+    <p class="big">$69.98/mo <span style="font-size:22px;font-weight:500;color:var(--muted)">recovered · $839.76/yr</span></p>
+    <ul>
+      <li>Adobe billed twice under two names + Spotify Family overlapping Spotify — traced to named charges, with dates.</li>
+      <li>Monthly bills are never flagged — only 3-day clusters and variant names.</li>
+      <li>Full run ≈ 5k tokens. Blended cost per family: pennies per month.</li>
+    </ul>
+  </section>
+  <!-- 5. Meta depth -->
+  <section class="slide" aria-label="Meta depth">
+    <p class="kicker">04 · Meta depth — 1 API, 0 other endpoints</p>
+    <table>
+      <tr><th>Model</th><th>Job</th></tr>
+      <tr><td>Wonder <code>muse-wonder-1.0</code></td><td>Buckets + shock-test (long-context reasoning)</td></tr>
+      <tr><td>Spark <code>muse-spark-1.3</code></td><td>Leak detection + Daily Digest (<code>minimal</code> reasoning)</td></tr>
+      <tr><td>SAM 3.1</td><td>Receipt photo → transaction JSON (<code>/responses</code> API)</td></tr>
+      <tr><td>Image <code>muse-image-1.0</code></td><td>Logo, bucket art, shock infographic</td></tr>
+    </table>
+    <p style="margin-top:16px">PII stays local — only anonymized summaries reach models. Every call has a local fallback; the demo never 500s.</p>
+  </section>
+  <!-- 6. Business -->
+  <section class="slide" aria-label="Business">
+    <p class="kicker">05 · Business beyond the hackathon</p>
+    <ul>
+      <li>19-account universe mapped (bank, 529/Coverdell, HSA, IRA, 401k, loans, cards, payroll) → Plaid rollout sequenced.</li>
+      <li>Customers: suburban families ($8–12/mo), 529 gifters, fee-only planners ($49–99/mo), credit unions (B2B2C).</li>
+      <li>Full roadmap in <code>BEYOND-HACKATHON.md</code>.</li>
+    </ul>
+  </section>
+  <!-- 7. Ask -->
+  <section class="slide" aria-label="Ask">
+    <p class="kicker">06 · Ask</p>
+    <h2>Indie Track top prize funds the Plaid + 529 live integrations and a 10-family Center Valley pilot.</h2>
+    <p class="sub">Bucketwise: Household CFO. Actions, not charts.</p>
+    <p style="margin-top:24px">github.com/starlord20/bucketwise</p>
+  </section>
+</main>
+  <div class="nav" style="width:min(1060px,94vw)">
+    <button class="primary" onclick="show(i - 1)" aria-label="Previous slide">← Prev</button>
+    <button onclick="show(i + 1)" aria-label="Next slide">Next →</button>
+    <span class="count" id="count">1 / 7</span>
+  </div>
+  <p class="foot">Arrow keys or buttons to navigate · Print to PDF for a handout · Numbers: $69.98/mo, 98 txns / 90 days, $15k / $250k / $30k</p>
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  let i = 0;
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    try { location.hash = 'slide-' + (i + 1); } catch (e) {}
+  }
+  document.addEventListener('keydown', (e) => {
+    if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) show(i + 1);
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) show(i - 1);
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+  });
+  const m = location.hash.match(/slide-(\d+)/);
+  show(m ? parseInt(m[1], 10) - 1 : 0);
+</script>
+</body>
+</html>

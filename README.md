@@ -1,32 +1,39 @@
 <img width="400" alt="Bucketwise logo" src="./public/logo.png" />
 
 # Bucketwise — Household CFO
-### Financial Freedom OS: Actions, Not Charts
+
+## Financial Freedom OS: Actions, Not Charts
+
 **Team Bucketwise | Indie Track — Meta Global AI Developer Hackathon 2026**
 **Oct 26 - Nov 4 | Submission by Nov 4, 9pm ET**
 
 **Tagline:** Building Household CFO — Indie Track, Meta Global AI Hackathon (Oct 26-Nov 4). It turns messy family finances (Gmail, bank CSVs, 529s) into 3 buckets — Emergency, College, Life Event — with a shock-test for 2008/2020/2022 crises.
 
 **Demo Video:** [YouTube — 2.5 min walkthrough](link-coming-Nov-1)
-**Live Demo:** http://localhost:3000 (after `npm run dev`)
+**Live Demo:** <http://localhost:3000> (after `npm run dev`)
 **Pitch Deck:** [PITCH-DECK.md](./PITCH-DECK.md) (6 slides)
 
 ---
 
+**Impact:** Tested with 98 txns (90 days) → Found $69.98/mo ($839.76/yr) duplicate leaks + needs +$3,200 buffer for 2020-style shock
+
 ### The Problem We Know Firsthand
+
 As a family in Center Valley, PA managing college savings + emergency buffer + life events, our financial picture lived in 6+ places — bank statements, Gmail receipts, 529 emails, Google Drive tax docs. Existing tools give charts. Families with buffer + simple plan survived 2008/2020/2022 better. Families without didn't.
 
 **70M US families face this.** In our own test, Bucketwise found **$69.98/mo in duplicate subscriptions ($839.76/yr)** — real money, traced to named charges.
 
 ### The Solution — One Workflow
+
 **Upload → Parse → 3 Buckets → Shock-Test → Daily Digest**
 
-1.  **Ingest:** Upload Bank CSV or Connect Gmail/Drive (OAuth). We parse 90 days of transactions.
-2.  **Bucketwise Intelligence:** Muse Wonder (long-context) reads all transactions + 529 statements → auto-allocates into **Emergency / College / Life Event** + finds leaks.
-3.  **Shock-Test Simulator:** Muse Wonder simulates: *Income -30% (2020-style), Expenses +20% (2022 inflation), College +6%/yr*. PII stays local — only an anonymized bucket summary is sent. Output: per-shock verdicts + buffer needed.
-4.  **Daily CFO Digest:** Muse Spark generates actionable daily email: "Move $300 to Emergency, Cancel Adobe duplicate, Pause extra college for 2 months".
+1. **Ingest:** Upload Bank CSV or Connect Gmail/Drive (OAuth). We parse 90 days of transactions.
+2. **Bucketwise Intelligence:** Muse Wonder (long-context) reads all transactions + 529 statements → auto-allocates into **Emergency / College / Life Event** + finds leaks.
+3. **Shock-Test Simulator:** Muse Wonder simulates: *Income -30% (2020-style), Expenses +20% (2022 inflation), College +6%/yr*. PII stays local — only an anonymized bucket summary is sent. Output: per-shock verdicts + buffer needed.
+4. **Daily CFO Digest:** Muse Spark generates actionable daily email: "Move $300 to Emergency, Cancel Adobe duplicate, Pause extra college for 2 months".
 
 ### Key Features (Feature Frozen Oct 30)
+
 - **3-Bucket OS:** Emergency ($15k), College ($250k), Life Event ($30k) with progress bars
 - **Leak Detection:** Finds duplicate subscriptions (Adobe x2, Spotify family)
 - **Shock-Test Simulator:** Test against 2008, 2020, 2022 crises
@@ -34,13 +41,14 @@ As a family in Center Valley, PA managing college savings + emergency buffer + l
 - **Muse Image Visuals:** Auto-generated bucket cards + shock infographic
 
 ### How We Use Meta Tools — Depth Matters
+
 This is not a wrapper. Every Meta tool does real work:
 
 | Meta Tool | Where It Sits | Why It Matters |
-|-----------|---------------|----------------|
+| ----------- | --------------- | ---------------- |
 | **Muse Wonder** (`muse-wonder-1.0`) | `lib/meta-api.ts` → `buildBucketsWithWonder()` | Long-context (90-day) financial reasoning → bucket strategy, learns from past crises |
 | **Muse Spark** (`muse-spark-1.3`) | `lib/meta-api.ts` → `detectLeaksFast()` + `buildDigestWithSpark()` | Fast cashflow parse + leak detection (<2s for 500 txns) and Daily Digest writer |
-| **SAM 3.1** (`sam-3.1` via `/responses`) | `app/api/parse-receipt/route.ts` | Receipt photo → structured transaction JSON → one tap into buckets |
+| **SAM 3.1** (`sam-3.1` via `/responses`) | `app/api/parse-receipt/route.ts` | Receipt photo → structured transaction JSON → one tap into buckets (attempted-live: SAM returns empty text — it segments, doesn't OCR; route answers honest 422, scored flow stays CSV → buckets → shock → digest) |
 | **Muse Image** (`muse-image-1.0`) | `components/BucketCard.tsx`, shock section | Generates visual bucket cards + shock-test infographic |
 | **Muse Wonder** | `app/api/shock-test/route.ts` | PII-safe shock simulation — raw data stays local, only anonymized summary sent |
 | **Meta Muse API** (dev.meta.ai) | Gateway for all | Single auth for Wonder/Spark/SAM/Image — no other endpoints |
@@ -51,16 +59,19 @@ This is not a wrapper. Every Meta tool does real work:
 
 *Scope note: the approved plan named Llama open-weights via Baseten/Modal for shock-tests; the issued dev.meta.ai endpoint serves Muse models only, so shock simulation runs on Muse Wonder through the same Meta Muse API — PII-stays-local guarantees unchanged.*
 
-
 ### How to Run Locally — Stranger Test (Exit Criteria)
+
 **Prerequisites:** Node 18+, npm
 
-1.  **Clone:**
+1. **Clone:**
+
     ```bash
     git clone https://github.com/starlord20/bucketwise.git
     cd bucketwise
+    ```
 
-2. Env Setup: Copy .env.example to .env.local:
+2. **Env Setup: Copy .env.example to .env.local:**
+
     ```bash
     META_API_KEY=your_150_credits_key_from_dev.meta.ai
     META_API_BASE=your_base_url_from_dev.meta.ai
@@ -68,26 +79,48 @@ This is not a wrapper. Every Meta tool does real work:
     GOOGLE_CLIENT_SECRET=... (optional for Gmail)
     GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/callback
     RESEND_API_KEY=... (optional for daily digest)
+    ```
 
-3. Install & Run:
+3. **Install & Run:**
+
     ```bash
     npm install
     npm run dev
-Open http://localhost:3000
+    ```
 
 4. Test without credits: Use sample CSV at /samples/sample-bank.csv — works with mock fallback.
+5. Verify any change: `npm test` (12 checks, ~1s) or `npm run verify` (tests + typecheck + build).
 
-## Tech Stack
-**Frontend**: Next.js 16 (Turbopack), React 19, inline styles (no CSS framework)
-**Backend**: Next.js API Routes, Node
-**AI**: Meta Muse API only (Wonder, Spark, SAM 3.1, Muse Image) via dev.meta.ai
-**Storage**: LocalStorage (demo) → Postgres (roadmap)
-**Deploy**: Vercel
+### Tech Stack
 
-## Team Bucketwise
+- **Frontend**: Next.js 16 (Turbopack), React 19, inline styles (no CSS framework)
+- **Backend**: Next.js API Routes, Node
+- **AI**: Meta Muse API only (Wonder, Spark, SAM 3.1, Muse Image) via dev.meta.ai
+- **Storage**: LocalStorage (demo) → Postgres (roadmap)
+- **Deploy**: Vercel
+
+### Stranger Test Proof
+
+- [x] Fresh clone works: `npm install` → `npm run dev` → upload `/samples/sample-bank.csv` → 3 buckets + $69.98 leaks (mock instant; live Wonder run ~30s)
+- [x] Mock fallback if no META_API_KEY — demo never breaks
+- [ ] Credit burn proof: save terminal `usage` output screenshot as `docs/credits.png`, then check this box
+
+### Team Bucketwise
+
 Solo Indie Developer — **Karthik Ramani** — Center Valley, PA
 Background: Lived the problem — managing college + emergency + life events across 6 apps. Building the CFO I wish I had.
 
 Discord: Bucketwise | Karthik | GitHub: @starlord20
 
 Built for Meta Global AI Developer Hackathon 2026 — Indie Track
+
+## Submission Checklist
+
+- [ ] Repo public, README stranger-test ready
+- [ ] Demo video link (by Nov 1)
+- [ ] Loom link + 60-sec vertical cut
+- [ ] Submission by noon ET Nov 4
+
+## Live Demo
+
+[https://bucketwise.vercel.app/](https://bucketwise.vercel.app/)
