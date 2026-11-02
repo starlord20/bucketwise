@@ -57,7 +57,7 @@ This is not a wrapper. Every Meta tool does real work:
 
 1.  **Clone:**
     ```bash
-    git clone https://github.com/yourname/bucketwise.git
+    git clone https://github.com/starlord20/bucketwise.git
     cd bucketwise
 
 2. Env Setup: Copy .env.example to .env.local:
@@ -78,7 +78,7 @@ Open http://localhost:3000
 4. Test without credits: Use sample CSV at /samples/sample-bank.csv — works with mock fallback.
 
 ## Tech Stack
-**Frontend**: Next.js 16 (Turbopack), React 19, Tailwind
+**Frontend**: Next.js 16 (Turbopack), React 19, inline styles (no CSS framework)
 **Backend**: Next.js API Routes, Node
 **AI**: Meta Muse API only (Wonder, Spark, SAM 3.1, Muse Image) via dev.meta.ai
 **Storage**: LocalStorage (demo) → Postgres (roadmap)
