@@ -46,11 +46,10 @@ This is not a wrapper. Every Meta tool does real work:
 
 | Meta Tool | Where It Sits | Why It Matters |
 | ----------- | --------------- | ---------------- |
-| **Muse Wonder** (`muse-wonder-1.0`) | `lib/meta-api.ts` → `buildBucketsWithWonder()` | Long-context (90-day) financial reasoning → bucket strategy, learns from past crises |
+| **Muse Wonder** (`muse-wonder-1.0`) | `lib/meta-api.ts` (buckets) + `/api/shock-test` (shock) | Long-context bucket reasoning over 90-day txns; PII-safe shock (Income -30% / Expenses +20%) — shock sends only an anonymized bucket summary, raw txns stay local |
 | **Muse Spark** (`muse-spark-1.3`) | `lib/meta-api.ts` → `detectLeaksFast()` + `buildDigestWithSpark()` | Fast cashflow parse + leak detection (<2s for 500 txns) and Daily Digest writer |
 | **SAM 3.1** (`sam-3.1` via `/responses`) | `app/api/parse-receipt/route.ts` | Receipt photo → structured transaction JSON → one tap into buckets (attempted-live: SAM returns empty text — it segments, doesn't OCR; route answers honest 422, scored flow stays CSV → buckets → shock → digest) |
 | **Muse Image** (`muse-image-1.0`) | `components/BucketCard.tsx`, shock section | Generates visual bucket cards + shock-test infographic |
-| **Muse Wonder** | `app/api/shock-test/route.ts` | PII-safe shock simulation — raw data stays local, only anonymized summary sent |
 | **Meta Muse API** (dev.meta.ai) | Gateway for all | Single auth for Wonder/Spark/SAM/Image — no other endpoints |
 | **Muse Code** | This CLI agent | Scaffolded `/api/ingest`, `/api/shock-test`, `/api/parse-receipt` + UI wiring |
 
@@ -99,7 +98,9 @@ This is not a wrapper. Every Meta tool does real work:
 - **Storage**: LocalStorage (demo) → Postgres (roadmap)
 - **Deploy**: Vercel
 
-### Stranger Test Proof
+# ![Bucketwise live on Vercel — 98 txns, 3 buckets, leaks, digest](public/working-screenshot.jpg)
+
+## Stranger Test Proof
 
 - [x] Fresh clone works: `npm install` → `npm run dev` → upload `/samples/sample-bank.csv` → 3 buckets + $69.98 leaks (mock instant; live Wonder run ~30s)
 - [x] Mock fallback if no META_API_KEY — demo never breaks
