@@ -2,7 +2,8 @@
 
 ## Repo
 - [ ] All work committed and pushed to `origin` (starlord20/bucketwise)
-- [ ] Repo visibility set as required by the rules (check hackathon portal)
+- [x] Repo public (verified 200) + MIT LICENSE added (open source is mandatory)
+- [ ] Repo visibility confirmed in the hackathon portal (user check)
 - [ ] `.env.local` NOT committed (`git status` clean of secrets; `.gitignore` covers `.env*`)
 - [ ] `npm install && npm run dev` works from a fresh clone (stranger test)
 - [ ] README: demo video linked, Tech Stack table current, run instructions valid
