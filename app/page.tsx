@@ -153,6 +153,19 @@ export default function Page() {
   const lastCsvRef = useRef<string | null>(null);
   lastCsvRef.current = lastCsv;
 
+  function resetDemo() {
+    try { localStorage.removeItem(LS_KEY); localStorage.removeItem('bucketwise:shock'); } catch { /* ignore */ }
+    setBuckets(DEFAULT_BUCKETS);
+    setLeaks([]);
+    setActions([]);
+    setCancelDraft(null);
+    setShock(null);
+    setMeta(null);
+    setLastCsv(null);
+    setReceipt(null);
+    setError(null);
+  }
+
   function startImport(kind: 'csv' | 'gmail') {
     setStages(kind === 'gmail' ? GMAIL_STAGES : CSV_STAGES);
     setStage(0);
@@ -276,6 +289,7 @@ export default function Page() {
           <p style={{margin: '2px 0 0', fontSize: 13, color: '#5b6470'}}>Household CFO — Financial Freedom OS · Indie Track</p>
         </div>
         <div style={{fontSize: 12, color: '#5b6470', border: '1px solid #e4e5e7', background: 'white', padding: '6px 12px', borderRadius: 999}}>Gmail ingest → Wonder buckets → Spark leaks → Wonder shock-test</div>
+        <button onClick={resetDemo} title="Clear saved analysis and return to the default view" style={{fontSize: 12, padding: '6px 14px', borderRadius: 999, border: '1px solid #e4e5e7', background: 'white', color: '#5b6470', cursor: 'pointer'}}>Start over</button>
       </header>
       <ConnectAccounts onStart={(kind) => startImport(kind)} onResult={handleResult} onReceipt={setReceipt} />
       {(loading || finished) && <ImportProgress stages={stages} current={stage} complete={!loading} />}

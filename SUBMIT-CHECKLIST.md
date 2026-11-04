@@ -3,10 +3,11 @@
 ## Repo
 - [ ] All work committed and pushed to `origin` (starlord20/bucketwise)
 - [x] Repo public (verified 200) + MIT LICENSE added (open source is mandatory)
+- [x] All work committed and pushed to `origin` (in sync, verify green)
 - [ ] Repo visibility confirmed in the hackathon portal (user check)
-- [ ] `.env.local` NOT committed (`git status` clean of secrets; `.gitignore` covers `.env*`)
+- [x] `.env.local` NOT committed (status shows only `.DS_Store` noise; `.gitignore` covers `.env*`)
 - [ ] `npm install && npm run dev` works from a fresh clone (stranger test)
-- [ ] README: demo video linked, Tech Stack table current, run instructions valid
+- [x] README: demo video linked, Tech Stack table current, run instructions valid
 
 ## Proof artifacts (judges score these)
 - [ ] `node test-meta.js` output screenshot (usage = $150 burn proof)
