@@ -18,7 +18,7 @@ Meta stack, one API, zero other endpoints: Wonder `muse-wonder-1.0` (buckets + s
 ## Links
 - Code: https://github.com/starlord20/bucketwise
 - Live demo: https://bucketwise.vercel.app/
-- Demo video: [PASTE YOUTUBE LINK]
+- Demo video: https://youtu.be/KFze_MqESo8 (backup: https://www.loom.com/share/1d965246b5e4492ea5329a3e7e98fe6d)
 - Pitch deck: https://bucketwise.vercel.app/pitch-deck.html
 
 ## Numbers (keep identical everywhere)

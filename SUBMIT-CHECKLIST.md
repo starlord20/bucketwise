@@ -17,10 +17,10 @@
 - [ ] Receipt scan: attempted-live with honest 422 (SAM 3.1 returns empty text — segments, doesn't OCR; not a photo defect). Scored workflow stays CSV → buckets → shock → digest.
 
 ## Demo video (DEMO-SCRIPT.md, 2:30)
-- [ ] Recorded happy path, no music, clean voiceover
+- [x] Recorded happy path (verified: 151s, full flow with voiceover, "bucketwise: A demo walkthrough")
 - [ ] Cold viewer can repeat back what Bucketwise does
 - [ ] 60-sec vertical cut for Discord/X
-- [ ] Uploaded unlisted to YouTube, link in README + submission form
+- [x] Uploaded to YouTube, link in README + submission form (Shorts link + Loom backup in SUBMISSION-DRAFT.md)
 
 ## Filing
 - [x] Submission text drafted (`SUBMISSION-DRAFT.md` — Indie-track scope, consistent numbers, links; needs YouTube link)
