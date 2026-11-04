@@ -32,7 +32,7 @@ Judging: Nov 5–9, winners Nov 10.
 
 ## Log
 
-- Box 3 evidence: 30s progress clip posted in Discord — https://www.loom.com/share/1d965246b5e4492ea5329a3e7e98fe6d (progress proof only; final 2.5-min demo video still open).
+- Demo video: full ~2.5-min walkthrough recorded (Loom https://www.loom.com/share/1d965246b5e4492ea5329a3e7e98fe6d — upload CSV → cancel 2 duplicates + draft email → shock test with buffer; matches DEMO-SCRIPT). Needs YouTube unlisted upload, then wire link into README + submission form.
 - Oct 28: ingest wired (Wonder + Spark parallel, JSON mode, usage log, mock fallback); `tsc` + `next build` green.
 - Oct 28 Box 2 done: `page.tsx` renders live buckets/leaks/actions from `/api/ingest` via `ConnectAccounts` upload (loading + error states, mock badge); shock result shown inline; build green. Live proof still blocked on Box 1 (no key).
 - Oct 28 bugfix: blank CSV lines crashed ingest (500 via `toLowerCase`); fixed `parseCSVTransactions` + hardened `norm` + route sanitize. Probed real code (`/tmp/probe-ingest.js`): 61 rows, Adobe/Spotify leaks found, hostile/empty input safe. No test harness in repo — probe kept at `/tmp/probe-ingest.js`, `/tmp/cfo-dist/`.
