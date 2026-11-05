@@ -9,8 +9,8 @@
 
 **Tagline:** Building Household CFO — Indie Track, Meta Global AI Hackathon (Oct 26-Nov 4). It turns messy family finances (Gmail, bank CSVs, 529s) into 3 buckets — Emergency, College, Life Event — with a shock-test for 2008/2020/2022 crises.
 
-**Demo Video:** [YouTube — Bucketwise, a Household CFO (~2.5 min, HD)](https://youtu.be/KFze_MqESo8)
-**Demo Walkthrough (HD, click to play):** [![Bucketwise demo walkthrough](public/working-screenshot.jpg)](https://youtu.be/KFze_MqESo8)
+**Demo Video:** [YouTube — Bucketwise, a Household CFO (~2.5 min, HD)](https://youtu.be/lwcic--eeVQ)
+**Demo Walkthrough (HD, click to play):** [![Bucketwise demo walkthrough](public/working-screenshot.jpg)](https://youtu.be/lwcic--eeVQ)
 **Live Demo:** <http://localhost:3000> (after `npm run dev`)
 **Pitch Deck:** [Local Instance](<http://localhost:3000/pitch-deck.html>) or [Hosted in Vercel](<https://bucketwise.vercel.app/pitch-deck.html>) (6 slides)
 
